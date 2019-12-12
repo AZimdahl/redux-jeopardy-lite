@@ -23,6 +23,20 @@ class Jeopardy extends Component {
     })
   }
 
+  displayQuestion() {
+    if (this.state.data.value !== null) {
+        return (
+            <div>
+                <h2>Question: {this.state.data.question}</h2>
+                <p>Point Value: {this.state.data.value}</p>
+            </div>
+        )
+    }
+    else {
+        this.getNewQuestion()
+    }
+  }
+
   //when the component mounts, get a the first question
   componentDidMount() {
     this.getNewQuestion();
@@ -32,7 +46,7 @@ class Jeopardy extends Component {
   render() {
     return (
       <div>
-        {JSON.stringify(this.state.data)}
+        {this.displayQuestion()}
       </div>
     );
   }
