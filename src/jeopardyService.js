@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 class JeopardyService {
-    constructor(url = 'https://jservice.io/api/random', client = axios.create()){
+    constructor(url = 'http://jservice.io/api/random', client = axios.create()){
         this.url = url;
         this.client = client;
     }
