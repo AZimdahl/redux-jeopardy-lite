@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import JeopardyDisplay from './JeopardyDisplay'
 
 //import our service
 import JeopardyService from "../../jeopardyService";
@@ -17,11 +18,11 @@ class Jeopardy extends Component {
   //get a new random question from the API and add it to the data object in state
   getNewQuestion() {
     console.clear()
-    let regex = /[\W\d\s:]/g; //list of nonAlphanumeric characters
+    let regex = /^[a-z0-9\s]+$/ig; //list of nonAlphanumeric characters
 
     return this.client.getQuestion().then(result => {
       let regTest = regex.test(result.data[0].answer) //checking answer for the regex
-      if (!regTest) {
+      if (regTest) {
         this.setState({
           data: result.data[0]
         })
@@ -47,7 +48,7 @@ class Jeopardy extends Component {
     this.setState({
       score: newScore
     })
-    
+
     event.target.answer.value = ""
     this.getNewQuestion()
   }
@@ -88,9 +89,16 @@ class Jeopardy extends Component {
         <hr />
         <p>Score: {this.state.score}</p>
         <form onSubmit={this.handleSubmit}>
+          <select>
+            <option>What is/are</option>
+            <option>Who is/are</option>
+            <option>When was</option>
+            <option>Where is</option>
+          </select>
           <input name="answer" type="text" />
           <button>Submit</button>
         </form>
+        {JeopardyDisplay}
       </div>
     );
   }
