@@ -18,22 +18,16 @@ class Jeopardy extends Component {
   //get a new random question from the API and add it to the data object in state
   getNewQuestion() {
     console.clear()
-    let regex = /^[a-z0-9\s]+$/ig; //list of nonAlphanumeric characters
 
-    return this.client.getQuestion().then(result => {
-      let regTest = regex.test(result.data[0].answer) //checking answer for the regex
-      if (regTest) {
-        this.setState({
-          data: result.data[0]
-        })
-      }
-      else {
-        this.getNewQuestion();
-      }
+    return this.client.getQuestion(3).then(result => {
+      this.setState({
+        data: result.data
+      })
+
     })
   }
 
-  handleSubmit= (event) => {
+  handleSubmit = (event) => {
     event.preventDefault()
     let newScore = this.state.score;
     let playerAnswer = event.target.answer.value;
@@ -53,27 +47,45 @@ class Jeopardy extends Component {
     this.getNewQuestion()
   }
 
-  displayQuestion() {
+  displayCategory() {
     let categoryTitle = "";
-   
+    let renderArray = []
 
-    if (this.state.data.value !== null) {
-        if (this.state.data.category != null) {
-          categoryTitle = this.state.data.category.title
+    for (let i in this.state.data) {
+      if (this.state.data[i].value !== null) {
+        if (this.state.data[i].category != null) {
+          categoryTitle = this.state.data[i].category.title
           categoryTitle = categoryTitle.toLocaleUpperCase();
-          console.log(this.state.data.answer)
+          console.log(this.state.data[i].answer)
         }
-        return (
-          <div>
+        renderArray.push(
+          <div key={i}>
             <h1>CATEGORY: '{categoryTitle}'</h1>
-            <h2>Question: {this.state.data.question}</h2>
-            <p>Point Value: {this.state.data.value}</p>
+
           </div>
         )
+      }
+      else {
+        this.getNewQuestion()
+      }
     }
-    else {
-      this.getNewQuestion()
+    return (renderArray)
+  }
+
+  displayQuestion() {
+    let categoryTitle = "";
+    if (this.state.data[0] != undefined) {
+      categoryTitle = this.state.data[0].category.title
+      categoryTitle = categoryTitle.toLocaleUpperCase();
     }
+
+    return (
+      <div>
+        <h1>CATEGORY: '{categoryTitle}'</h1>
+        <h2>Question: {this.state.data[0].question}</h2>
+        <p>Point Value: {this.state.data[0].value}</p>
+      </div>
+    )
   }
 
   //when the component mounts, get a the first question
@@ -83,23 +95,19 @@ class Jeopardy extends Component {
 
   //display the results on the screen
   render() {
+    let categoryDisplay = this.displayCategory()
+    let question = this.displayQuestion()
+
     return (
       <div>
-        {this.displayQuestion()}
-        <hr />
-        <p>Score: {this.state.score}</p>
-        <form onSubmit={this.handleSubmit}>
-          <select>
-            <option>What is/are</option>
-            <option>Who is/are</option>
-            <option>When was</option>
-            <option>Where is</option>
-          </select>
-          <input name="answer" type="text" />
-          <button>Submit</button>
-        </form>
-        {JeopardyDisplay}
+        <JeopardyDisplay
+          categoryDisplay={categoryDisplay}
+          question={question}
+          score={this.state.score}
+          handleSubmit={this.handleSubmit}
+        />
       </div>
+
     );
   }
 }
