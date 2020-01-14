@@ -19,7 +19,7 @@ class Jeopardy extends Component {
   getNewQuestion() {
     console.clear()
 
-    return this.client.getQuestion(3).then(result => {
+    return this.client.getQuestion(1).then(result => {
       this.setState({
         data: result.data
       })
@@ -32,11 +32,11 @@ class Jeopardy extends Component {
     let newScore = this.state.score;
     let playerAnswer = event.target.answer.value;
 
-    if (playerAnswer.toLocaleUpperCase() === this.state.data.answer.toLocaleUpperCase()) {
-      newScore += this.state.data.value
+    if (playerAnswer.toLocaleUpperCase() === this.state.data[0].answer.toLocaleUpperCase()) {
+      newScore += this.state.data[0].value
     }
     else {
-      newScore -= this.state.data.value
+      newScore -= this.state.data[0].value
     }
 
     this.setState({
@@ -61,7 +61,8 @@ class Jeopardy extends Component {
         renderArray.push(
           <div key={i}>
             <h1>CATEGORY: '{categoryTitle}'</h1>
-
+            <h2>Question: {this.state.data[0].question}</h2>
+            <p>Point Value: {this.state.data[0].value}</p>
           </div>
         )
       }
@@ -72,21 +73,22 @@ class Jeopardy extends Component {
     return (renderArray)
   }
 
-  displayQuestion() {
-    let categoryTitle = "";
-    if (this.state.data[0] != undefined) {
-      categoryTitle = this.state.data[0].category.title
-      categoryTitle = categoryTitle.toLocaleUpperCase();
-    }
+  // displayQuestion() {
+  //   let categoryTitle = "";
+  //   if (this.state.data[0] != undefined) {
+  //     categoryTitle = this.state.data[0].category.title
+  //     categoryTitle = categoryTitle.toLocaleUpperCase();
+  //   }
 
-    return (
-      <div>
-        <h1>CATEGORY: '{categoryTitle}'</h1>
-        <h2>Question: {this.state.data[0].question}</h2>
-        <p>Point Value: {this.state.data[0].value}</p>
-      </div>
-    )
-  }
+  //   console.log (this.state.data)
+  //   // return (
+  //   //   <div>
+  //   //     <h1>CATEGORY: '{categoryTitle}'</h1>
+  //   //     <h2>Question: {this.state.data[0].question}</h2>
+  //   //     <p>Point Value: {this.state.data[0].value}</p>
+  //   //   </div>
+  //   // )
+  // }
 
   //when the component mounts, get a the first question
   componentDidMount() {
@@ -96,7 +98,7 @@ class Jeopardy extends Component {
   //display the results on the screen
   render() {
     let categoryDisplay = this.displayCategory()
-    let question = this.displayQuestion()
+    let question = []
 
     return (
       <div>
@@ -107,7 +109,6 @@ class Jeopardy extends Component {
           handleSubmit={this.handleSubmit}
         />
       </div>
-
     );
   }
 }

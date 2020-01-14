@@ -7,7 +7,7 @@ function JeopardyDisplay(props) {
 
     if (clicked) {
         display = (<div>
-            {props.question}
+            {props.categoryDisplay}
             <hr />
             <p>Score: {props.score}</p>
             <form onSubmit={props.handleSubmit}>
