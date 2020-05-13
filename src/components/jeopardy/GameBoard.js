@@ -21,7 +21,7 @@ function GameBoard(props) {
                     {props.data.question}
                 </div>
                 <AnswerForm checkAnswer={props.checkAnswer} />
-                {score}
+                <div>{score}</div>
             </div>
         )
     }

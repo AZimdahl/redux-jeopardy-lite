@@ -11,11 +11,6 @@ class Jeopardy extends Component {
     constructor(props) {
         super(props);
         this.client = new JeopardyService();
-        this.state = {
-            data: {},
-            categories: [],
-            score: 0
-        }
     }
 
     //get a new random question from the API and add it to the data object in state
@@ -24,26 +19,20 @@ class Jeopardy extends Component {
             return (
                 this.client.getQuestion(categoryId, offsetMax)
                     .then(result => {
-                        this.setState({
-                            data: result.data[0]
-                        })
+                        this.props.getQuestion(result.data[0])
                     })
             )
         }
 
         return this.client.getQuestion().then(result => {
-            this.setState({
-                data: result.data[0]
-            })
+            this.props.getQuestion(result.data[0])
         })
     }
 
     getCategories = () => {
         return this.client.getCategories(3)
             .then(result => {
-                this.setState({
-                    categories: result.data
-                });
+                this.props.getCategories(result.data)
             });
     }
 
@@ -53,31 +42,30 @@ class Jeopardy extends Component {
     }
 
     checkAnswer = (answer) => {
-        if (answer.toUpperCase() === this.state.data.answer.toUpperCase()) {
-            this.setState((state, props) => ({
-                score: state.score + state.data.value,
-                data: {}
-            }));
+        if (answer.toUpperCase() === this.props.data.answer.toUpperCase()) {
+            this.props.scoreAnswer(
+                this.props.score + this.props.data.value,
+            )
+
         }
         else {
-            this.setState((state, props) => ({
-                score: state.score - state.data.value,
-                data: {}
-            }));
-
+            this.props.scoreAnswer(
+                this.props.score - this.props.data.value,
+            )
         }
 
         this.getCategories();
     }
 
+
     //display the results on the screen
     render() {
-        if (this.state.data.question) {
+        if (this.props.data && this.props.data.question) {
             return (
                 <div>
                     <GameBoard
-                        data={this.state.data}
-                        score={this.state.score}
+                        data={this.props.data}
+                        score={this.props.score}
                         checkAnswer={this.checkAnswer}
                     />
 
@@ -88,10 +76,10 @@ class Jeopardy extends Component {
         return (
             <div className="Jeopardy">
                 <CategoryList
-                    categories={this.state.categories}
+                    categories={this.props.categories}
                     getQuestion={this.getQuestion}
                 />
-                <GameBoard score={this.state.score} />
+                <GameBoard score={this.props.score} />
             </div>
         )
     }

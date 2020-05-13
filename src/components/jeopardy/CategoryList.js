@@ -4,7 +4,7 @@ function CategoryList(props) {
     return (
         <div className="CategoryList">
             {
-                props.categories.map(category => (
+               props.categories.map(category => (
                     <button
                         key={category.id}
                         onClick={() => props.getQuestion(category.id, category.clues_count - 1)}
